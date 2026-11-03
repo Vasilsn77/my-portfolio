@@ -31,6 +31,7 @@ export async function generateMetadata({
   return {
     title: project.title,
     description: project.summary,
+    alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
       title: project.title,
       description: project.summary,
@@ -95,7 +96,10 @@ export default async function ProjectCaseStudyPage({
   ].filter((section) => section.items.length > 0);
 
   return (
-    <main className="mx-auto w-full max-w-[880px] px-4 pt-28 pb-24 sm:px-6 md:pt-32 md:pb-32">
+    <main
+      id="main-content"
+      className="mx-auto w-full max-w-[880px] px-4 pt-28 pb-24 sm:px-6 md:pt-32 md:pb-32"
+    >
       <Link
         href="/#projects"
         className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-text"

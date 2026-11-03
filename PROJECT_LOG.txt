@@ -3,31 +3,22 @@ PROJECT LOG — Vasil S N Portfolio
 ================================================================================
 
 NEXT STEPS (resume here)
-  Current phase: PHASE 5 — polish + deploy prep.
-  Status: STEP 0/1/2 + PHASE 3 + PHASE 4 COMPLETE. `npm run lint` clean,
-          `npm run build` clean (16 static pages generated), dev runtime
-          smoke-tested for /, /resume, /projects/[slug], /sitemap.xml,
-          /robots.txt, /icon, /opengraph-image, 404 and /api/contact
-          (400 on invalid, silent 200 on honeypot, 400 on malformed JSON).
-  Do next:
-    1. AUDIT with reduced-motion ON, at 360 / 768 / 1280 / 1920 widths, and
-       with keyboard-only navigation. Fix anything broken.
-    2. PERFORMANCE pass: no layout shift, lazy-load below-the-fold images,
-       minimize client components, avoid needless re-renders, keep the cursor
-       spotlight + Lenis jank-free. Target Lighthouse 90+ perf, 95+ a11y /
-       best-practices, 100 SEO. Complete metadata (title template, description,
-       OG/Twitter, canonical via NEXT_PUBLIC_SITE_URL).
-    3. CLEANUP: remove dead code, unused deps, stray console logs. `npm run lint`
-       and `npm run build` must pass clean.
-    4. README.md: full "Deploy to Vercel" checklist (create GitHub repo + push,
-       import in Vercel, add the 4 env vars in Vercel project settings, pick a
-       *.vercel.app project name, optional custom domain later) PLUS where to
-       add the photo (public/images/me.jpg) and CV (public/cv.pdf).
-    5. Update this log (final structure, remaining TODOs) and commit
-       "chore: polish and deploy prep".
-  Open items only the owner can supply: public/images/me.jpg, public/cv.pdf,
-  certification titles, research status/paperUrl, PUC rank 12 vs 13, LTM role
-  title + joining date. The CV/photo paths already degrade gracefully.
+  Current phase: PHASE 5 COMPLETE — all five phases done. Project is deploy-ready.
+  Status: `npm run lint` clean, `npm run build` clean (16 pages generated).
+          Everything the brief asked for is implemented; the only remaining
+          work needs assets/facts only the owner can supply.
+  Do next (nothing is blocking; pick any):
+    1. Drop public/images/me.jpg and public/cv.pdf in place — no code changes
+       needed, both are auto-detected.
+    2. Fill the remaining placeholders (see KNOWN TODOs below): certification
+       titles, research status/paperUrl, PUC rank 12 vs 13, LTM role title +
+       joining date. They all live in src/data/*.
+    3. Deploy — follow "Deploy to Vercel — checklist" in README.md.
+    4. Optional later polish: real project screenshots via the `image` field on
+       each project in src/data/projects.ts (ProjectCover already renders them).
+  Verified in the final pass: /, /resume, /projects/[slug], /sitemap.xml,
+  /robots.txt, /icon, /opengraph-image all 200; unknown route 404; POST
+  /api/contact -> 400 invalid / silent 200 honeypot / 400 malformed JSON.
   NOTE (build gotcha): if the build fails with "require() of ES Module
         magic-string/dist/index.mjs not supported", delete the .next cache
         (`Remove-Item -Recurse -Force .next`) and rebuild. The package.json
@@ -122,11 +113,62 @@ KNOWN TODOs / PLACEHOLDERS
   [ ] Optional project screenshot images (Project.image field)
   [x] Phases 3–4: projects grid/case studies, remaining sections, contact,
       resume viewer, SEO assets — DONE
-  [ ] Phase 5: polish + deploy prep
+  [x] Phase 5: polish + deploy prep — DONE
 
 --------------------------------------------------------------------------------
 CHANGELOG (newest first)
 --------------------------------------------------------------------------------
+
+[2026-11-03 — PHASE 5: polish + deploy prep]
+  What: Accessibility/keyboard audit fixes, reduced-motion hardening,
+        canonical SEO URLs, dead-code check, and the full Vercel deploy
+        checklist. `npm run lint` clean, `npm run build` clean.
+  Accessibility (keyboard-only audit):
+    - AppProviders.tsx -> added a "Skip to content" link (visually hidden until
+      focused, jumps to #main-content).
+    - Added id="main-content" to every <main>: src/app/page.tsx,
+      src/app/projects/[slug]/page.tsx, src/app/resume/page.tsx,
+      src/app/not-found.tsx.
+    - Navbar.tsx -> Escape now closes the mobile menu (keyboard users could
+      previously only close it by re-tabbing to the toggle).
+    - src/app/not-found.tsx -> added an sr-only <h1> ("404 — Page not found");
+      the page previously had no heading.
+    - src/app/resume/page.tsx -> added an sr-only <h1> for the PDF viewer case
+      and demoted the fallback heading to <h2> (one h1 per page).
+  Reduced motion:
+    - AppProviders.tsx -> wrapped the tree in <MotionConfig reducedMotion="user">
+      so Motion-driven animations (mobile menu, page transitions, filter pill,
+      counter fallbacks) honour the OS setting. The CSS-level
+      prefers-reduced-motion block in globals.css already covered transitions
+      and the marquee.
+  SEO / metadata:
+    - Canonical URLs added: "/" (page.tsx), "/resume" (resume page),
+      "/projects/<slug>" (case-study generateMetadata), all resolved against
+      metadataBase from NEXT_PUBLIC_SITE_URL.
+    - not-found.tsx -> robots { index: false, follow: false }.
+    - Title template, description, OG + Twitter card, metadataBase were already
+      complete in layout.tsx.
+  Performance / cleanliness:
+    - Audited every file under src/ — no dead modules, no unused deps
+      (cmdk, lenis, lucide-react, motion, resend, zod are all used), no stray
+      console.log. The three console calls in api/contact/route.ts are
+      intentional server-side warn/error logs and never print secret values.
+    - Devicon skill icons already carry loading="lazy" + decoding="async";
+      generated ProjectCover art is pure CSS (no image request); next/image
+      handles the hero photo with priority + fill inside an aspect-square box
+      (no layout shift). The cursor spotlight stays rAF-throttled and is
+      disabled for reduced motion / coarse pointers.
+  Docs:
+    - README.md -> replaced the stub deploy section with a full "Deploy to
+      Vercel — checklist": push to GitHub, import the repo, the 4 environment
+      variables (per environment), choosing the *.vercel.app project name,
+      post-deploy verification (sitemap/robots/contact test), and the optional
+      custom domain. Also documents exactly where to drop public/images/me.jpg
+      and public/cv.pdf and how each degrades until then.
+  Decision: no changes to the intro loader or the atmosphere effects — both were
+    explicitly requested and are already cheap (the loader paints the overlay at
+    first paint so it becomes the LCP candidate rather than delaying it, and it
+    is skipped on repeat visits in the same session).
 
 [2026-11-03 — PHASE 4: research, skills, certs, contact, resume, SEO assets]
   What: Completed the home page after Projects and added the resume viewer,

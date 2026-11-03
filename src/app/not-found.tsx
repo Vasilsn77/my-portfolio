@@ -1,10 +1,20 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "404 — Page not found",
+  robots: { index: false, follow: false },
+};
 
 /** Terminal-style 404. */
 export default function NotFound() {
   return (
-    <main className="mx-auto flex w-full max-w-[720px] flex-1 flex-col justify-center px-4 py-28 sm:px-6">
+    <main
+      id="main-content"
+      className="mx-auto flex w-full max-w-[720px] flex-1 flex-col justify-center px-4 py-28 sm:px-6"
+    >
+      <h1 className="sr-only">404 — Page not found</h1>
       <div className="glass-elevated overflow-hidden rounded-2xl">
         <div className="flex items-center gap-2 border-b border-border px-4 py-3">
           <span className="size-3 rounded-full bg-white/10" aria-hidden />

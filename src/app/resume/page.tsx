@@ -7,6 +7,7 @@ import { hasCvFile } from "@/lib/assets";
 export const metadata: Metadata = {
   title: "Resume",
   description: `Resume of ${profile.name} — full stack, Gen AI and ML.`,
+  alternates: { canonical: "/resume" },
 };
 
 const toolbarButtonClass =
@@ -20,7 +21,12 @@ export default function ResumePage() {
   const cvAvailable = hasCvFile();
 
   return (
-    <main className="mx-auto flex w-full max-w-[1100px] flex-1 flex-col px-4 pt-24 pb-16 sm:px-6 md:pt-28">
+    <main
+      id="main-content"
+      className="mx-auto flex w-full max-w-[1100px] flex-1 flex-col px-4 pt-24 pb-16 sm:px-6 md:pt-28"
+    >
+      <h1 className="sr-only">Resume — {profile.name}</h1>
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Link
           href="/"
@@ -62,9 +68,9 @@ export default function ResumePage() {
           <span className="inline-flex size-14 items-center justify-center rounded-2xl border border-border bg-white/[0.03]">
             <FileText className="size-6 text-muted" aria-hidden />
           </span>
-          <h1 className="font-heading mt-6 text-2xl font-semibold text-text">
+          <h2 className="font-heading mt-6 text-2xl font-semibold text-text">
             Resume coming soon
-          </h1>
+          </h2>
           <p className="prose-width mt-3 text-sm leading-relaxed text-muted">
             The PDF isn&apos;t available yet. In the meantime, the projects and
             experience on the home page tell the same story — or reach out and

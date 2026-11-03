@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { About } from "@/components/sections/About";
 import { Certifications } from "@/components/sections/Certifications";
 import { Contact } from "@/components/sections/Contact";
@@ -9,6 +10,10 @@ import { Skills } from "@/components/sections/Skills";
 import { Footer } from "@/components/layout/Footer";
 import { hasCvFile } from "@/lib/assets";
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
 /**
  * Home page. Section order per the project brief:
  * Hero → About → Experience → Projects → Research → Skills → Certifications →
@@ -18,7 +23,7 @@ export default function Home() {
   const cvAvailable = hasCvFile();
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <Hero cvAvailable={cvAvailable} />
       <About />
       <Experience />
