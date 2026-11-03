@@ -3,19 +3,20 @@ PROJECT LOG — Vasil S N Portfolio
 ================================================================================
 
 NEXT STEPS (resume here)
-  Current phase: PHASE 5 COMPLETE — all five phases done. Project is deploy-ready.
+  Current phase: PHASE 6 COMPLETE — pushed to GitHub. Ready to deploy.
   Status: `npm run lint` clean, `npm run build` clean (16 pages generated).
-          Everything the brief asked for is implemented; the only remaining
-          work needs assets/facts only the owner can supply.
-  Do next (nothing is blocking; pick any):
-    1. Drop public/images/me.jpg and public/cv.pdf in place — no code changes
-       needed, both are auto-detected.
+          Local `main` pushed to origin/main at commit f31a3f9.
+  Do next:
+    1. DEPLOY — on vercel.com: New Project -> import
+       https://github.com/Vasilsn77/my-portfolio, add the 4 env vars (see
+       DEPLOYMENT below), deploy, then set NEXT_PUBLIC_SITE_URL to the live URL.
     2. Fill the remaining placeholders (see KNOWN TODOs below): certification
        titles, research status/paperUrl, PUC rank 12 vs 13, LTM role title +
        joining date. They all live in src/data/*.
-    3. Deploy — follow "Deploy to Vercel — checklist" in README.md.
-    4. Optional later polish: real project screenshots via the `image` field on
+    3. Optional later polish: real project screenshots via the `image` field on
        each project in src/data/projects.ts (ProjectCover already renders them).
+  Assets note: public/images/me.jpg and public/cv.pdf already exist and are now
+  committed, so the photo / CV features are live (no longer placeholders).
   Verified in the final pass: /, /resume, /projects/[slug], /sitemap.xml,
   /robots.txt, /icon, /opengraph-image all 200; unknown route 404; POST
   /api/contact -> 400 invalid / silent 200 honeypot / 400 malformed JSON.
@@ -44,15 +45,31 @@ How to run
   npm run build
 
 --------------------------------------------------------------------------------
+DEPLOYMENT
+--------------------------------------------------------------------------------
+  Repo URL:   https://github.com/Vasilsn77/my-portfolio  (branch: main)
+  Last push:  f31a3f9 (2026-11-03)
+  Host:       Vercel
+  Required env vars (Production + Preview + Development):
+    RESEND_API_KEY        Resend API key (re_...). Server-only; never commit.
+    CONTACT_TO_EMAIL      sayedvasil@gmail.com
+    CONTACT_FROM_EMAIL    onboarding@resend.dev (or a verified domain sender)
+    NEXT_PUBLIC_SITE_URL  the live URL, e.g. https://<project>.vercel.app
+  Next step:  Deploy via Vercel import — New Project -> import the repo above,
+              add the 4 env vars, deploy, then set NEXT_PUBLIC_SITE_URL to the
+              final URL and redeploy.
+
+--------------------------------------------------------------------------------
 FOLDER STRUCTURE
 --------------------------------------------------------------------------------
   PROJECT_LOG.txt          Living documentation (this file)
-  README.md                Short setup / env / deploy notes
+  README.md                Full project README (features / setup / deploy)
+  LICENSE                  MIT (Copyright (c) 2026 Vasil S N)
   .env.example             Env var template
-  .cursor/rules/           Agent rules (project-log alwaysApply)
+  .trae/rules/             Agent rules (project rules alwaysApply)
   public/
-    images/me.jpg          TODO — drop portrait here
-    cv.pdf                 TODO — drop resume PDF here
+    images/me.jpg          Portrait (hero / about) — present
+    cv.pdf                 Resume PDF (drives /resume + downloads) — present
   src/
     app/                   Routes, layout, globals.css
       api/contact/         POST handler (zod + rate limit + Resend)
@@ -103,8 +120,8 @@ Where to edit content
 --------------------------------------------------------------------------------
 KNOWN TODOs / PLACEHOLDERS
 --------------------------------------------------------------------------------
-  [ ] public/images/me.jpg — personal photo
-  [ ] public/cv.pdf — resume PDF
+  [x] public/images/me.jpg — personal photo (added)
+  [x] public/cv.pdf — resume PDF (added)
   [ ] Confirm PUC state rank: 12 vs 13 (profile.pucStateRank + stat label)
   [ ] LTM exact role title (experience.ts uses "Incoming Software Engineer")
   [ ] LTM joining date
@@ -118,6 +135,46 @@ KNOWN TODOs / PLACEHOLDERS
 --------------------------------------------------------------------------------
 CHANGELOG (newest first)
 --------------------------------------------------------------------------------
+
+[2026-11-03 — PHASE 6: pre-push checks, README rewrite, push to GitHub]
+  What: Ran pre-push safety checks, rewrote README.md, added MIT LICENSE,
+        removed unused starter assets, and pushed the repo to GitHub.
+  Files:
+    - README.md (full rewrite — title/badges, Preview, Features, Tech Stack,
+      Project Structure, Getting Started, Environment Variables, Customizing
+      Content, Deploying to Vercel, Scripts, Contact, License)
+    - LICENSE (NEW — MIT, "Copyright (c) 2026 Vasil S N")
+    - .gitignore (added a generic `*.log` rule)
+    - public/file.svg, globe.svg, next.svg, vercel.svg, window.svg (removed —
+      unused Create Next App starter assets)
+    - public/images/.gitkeep (removed — folder now holds me.jpg)
+    - public/images/me.jpg, public/cv.pdf (NEW — committed real assets)
+    - PROJECT_LOG.txt (this entry, DEPLOYMENT section, NEXT STEPS refresh)
+  Pre-push checks:
+    - `npm run lint` clean; `npm run build` clean (16 pages).
+    - Secrets: `.env.local` is gitignored and NOT tracked; only `.env.example`
+      is tracked and it contains empty placeholders (RESEND_API_KEY= empty).
+    - Searched the working tree AND all git history for Resend-like keys
+      (`re_[A-Za-z0-9]{15,}`) with `git grep` across `git rev-list --all` —
+      no matches; nothing to report.
+    - Ignore rules verified: node_modules, .next, .env*.local, .DS_Store,
+      *.log, .vercel are all ignored.
+    - No stray console.log/debug in src/ (only intentional server warn/error).
+    - public/images/me.jpg and public/cv.pdf confirmed present.
+  Git / push:
+    - Renamed local branch master -> main (`git branch -M main`).
+    - Commits: 9acf7af (cleanup), 86843f5 (docs: README + LICENSE),
+      a5612f0 (assets), f31a3f9 (merge repo initial commit).
+    - Remote origin already existed -> `git remote set-url` to
+      https://github.com/Vasilsn77/my-portfolio.git
+    - Push rejected first time (non-fast-forward): the GitHub repo already had
+      an unrelated `main` "Initial commit" holding only a LICENSE. Reconciled
+      with a NON-destructive merge (`git merge origin/main
+      --allow-unrelated-histories`, no conflicts) instead of a force push.
+    - `git push -u origin main` succeeded: 6109d8b..f31a3f9 main -> main.
+    - `git status` clean; branch tracks origin/main.
+  Note: a stale `origin/master` branch still exists on the remote from an
+    earlier push; it is not the default branch and was left untouched.
 
 [2026-11-03 — PHASE 5: polish + deploy prep]
   What: Accessibility/keyboard audit fixes, reduced-motion hardening,
