@@ -1,0 +1,141 @@
+================================================================================
+PROJECT LOG — Vasil S N Portfolio
+================================================================================
+
+NEXT STEPS (resume here)
+  Current phase: PHASE 3 — Projects grid + case studies.
+  Status: STEP 0, 1, 2 COMPLETE. `npm run lint` clean, `npm run build` clean,
+          `npm run dev` serves / with HTTP 200 and no runtime errors.
+  Do next:
+    1. Build the Projects section on the home page (filter tabs + Motion layout
+       grid) from src/data/projects.ts, replacing the sr-only #projects stub
+       in src/app/page.tsx.
+    2. Build project cards (deterministic gradient cover, tech chips, category,
+       Featured badge, Case study link, conditional GitHub link, tilt+glow).
+    3. Add "More projects in progress" card linking to profile.github.
+    4. Add /projects/[slug] route with generateStaticParams + generateMetadata.
+    5. Light page transitions + wire projects into the Command Palette group
+       (already partially wired — verify).
+    6. Run lint + build, commit "feat: projects grid and case studies",
+       update this log.
+  Then: PHASE 4 (research, skills, certs, contact, resume, SEO assets),
+        PHASE 5 (polish + deploy prep).
+  NOTE (build gotcha): if the build fails with "require() of ES Module
+        magic-string/dist/index.mjs not supported", delete the .next cache
+        (`Remove-Item -Recurse -Force .next`) and rebuild. The package.json
+        `overrides` pin to magic-string@0.30.21 already fixes resolution;
+        Turbopack's persistent cache can hold the stale error.
+
+Purpose
+  Production-quality personal portfolio: dark, futuristic, recruiter-ready.
+  Single-page home + project case studies + resume viewer + contact API.
+
+Tech stack
+  Next.js (App Router) + TypeScript (strict) + Tailwind CSS v4
+  motion (Motion for React), Lenis, cmdk, lucide-react, zod, Resend
+  Fonts: Space Grotesk (headings), Inter (body), JetBrains Mono (labels)
+  Package manager: npm
+
+How to run
+  npm install
+  npm run dev
+  npm run build
+
+--------------------------------------------------------------------------------
+FOLDER STRUCTURE
+--------------------------------------------------------------------------------
+  PROJECT_LOG.txt          Living documentation (this file)
+  README.md                Short setup / env / deploy notes
+  .env.example             Env var template
+  .cursor/rules/           Agent rules (project-log alwaysApply)
+  public/
+    images/me.jpg          TODO — drop portrait here
+    cv.pdf                 TODO — drop resume PDF here
+  src/
+    app/                   Routes, layout, globals.css
+    components/
+      layout/              Navbar (Footer later)
+      sections/            Hero, About, Experience (+ later sections)
+      ui/                  Buttons, headings, scramble, counters, toast
+      effects/             Lenis, Reveal, loader, atmosphere, progress
+      command-palette/     ⌘K palette + provider
+      providers/           AppProviders shell
+    data/                  ALL editable content (typed)
+    lib/                   utils, hooks, validators, scroll helpers
+
+--------------------------------------------------------------------------------
+DESIGN SYSTEM SUMMARY
+--------------------------------------------------------------------------------
+  Background:        #05060A
+  Surface:           #0B0D14
+  Elevated:          #11141D
+  Border:            rgba(255,255,255,0.08)
+  Text / muted:      #E6E8EF / #8A90A2
+  Accent gradient:   #22D3EE → #8B5CF6 (sparingly)
+  Status emerald:    #34D399 (online dots only)
+  Max content width: ~1200px
+  Section padding:   py-24 / py-32
+  Motion:            restrained; respect prefers-reduced-motion
+  Atmosphere:        fixed grid + top glow + ~3% grain + desktop spotlight
+
+Where to edit content
+  src/data/profile.ts
+  src/data/experience.ts
+  src/data/projects.ts
+  src/data/research.ts
+  src/data/skills.ts
+  src/data/certifications.ts
+  src/data/contact.ts
+
+--------------------------------------------------------------------------------
+KNOWN TODOs / PLACEHOLDERS
+--------------------------------------------------------------------------------
+  [ ] public/images/me.jpg — personal photo
+  [ ] public/cv.pdf — resume PDF
+  [ ] Confirm PUC state rank: 12 vs 13 (profile.pucStateRank + stat label)
+  [ ] LTM exact role title (experience.ts uses "Incoming Software Engineer")
+  [ ] LTM joining date
+  [ ] Certification titles (Scaler ×2, HackerRank) — placeholders in data
+  [ ] Research paper status / paperUrl when known
+  [ ] Optional project screenshot images (Project.image field)
+  [ ] Phases 3–5: projects grid/case studies, remaining sections, polish, deploy
+
+--------------------------------------------------------------------------------
+CHANGELOG (newest first)
+--------------------------------------------------------------------------------
+
+[2026-11-03 — STEP 0/1/2: context recovery, security, stabilize phases 1-2]
+  What: Took over from Cursor session. Recovered context; secured env vars;
+        fixed all lint errors and the production build; verified dev runtime.
+  Files:
+    - .trae/rules/project_rules.md (NEW — 4 project rules)
+    - .env.example (reset to empty placeholders only)
+    - .env.local (NEW — holds real RESEND_API_KEY; gitignored via .gitignore:34)
+    - package.json (magic-string override 0.30.21; @tailwindcss/postcss devDep)
+    - postcss.config.mjs (NEW — @tailwindcss/postcss plugin)
+    - next.config.ts (removed turbopack CSS rule; added turbopack.root)
+    - src/components/ui/BrandIcons.tsx (NEW — inline GitHub/LinkedIn SVGs)
+    - src/components/command-palette/CommandPalette.tsx (use BrandIcons)
+    - src/components/effects/IntroLoader.tsx (fix set-state-in-effect)
+    - src/components/layout/Navbar.tsx (useSyncExternalStore mod-key; router.push)
+    - src/components/ui/{AnimatedCounter,TextScramble,TypewriterRoles}.tsx
+  Why: Lint previously had 6 errors + 1 warning (react-hooks rules); production
+       build failed on the Tailwind CSS pipeline (magic-string ESM/CJS) .
+  Result: `npm run lint` clean; `npm run build` clean; `npm run dev` -> / = 200.
+  Decisions:
+    - Node v22.11.0 is below the ESM `require` threshold, hence the pin; a fresh
+      .next cache is required after the override.
+    - Secrets are read only from process.env on the server; nothing logged.
+
+[2026-11-03 ~ Phase 1 + Phase 2 in progress]
+  What: Foundation scaffold + Hero / About / Experience
+  Files:
+    - PROJECT_LOG.txt, README.md, .env.example, .cursor/rules/project-log.mdc
+    - .gitignore (allow .env.example)
+    - src/data/* (all content modules)
+    - src/lib/* (utils, hooks, validators, scroll)
+    - src/components/effects/*, ui/*, layout/Navbar, command-palette/*, providers
+    - src/components/sections/{Hero,About,Experience}.tsx
+    - src/app/{layout,page,globals}.css|tsx, next.config.ts
+  Why: Complete Phase 1 foundation and Phase 2 primary sections per brief.
+  Follow-ups: run build+lint, commit phases, then wait for "continue".

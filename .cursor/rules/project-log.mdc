@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+
+# Project log & content rules
+
+After EVERY change you make (feature, fix, refactor, dependency, config, content), update `PROJECT_LOG.txt`: add a dated CHANGELOG entry with files touched and reasoning, and update the structure/design/TODO sections if affected. Never finish a task without updating the log.
+
+Also keep all editable content in `src/data/*` and never hard-code content in components.

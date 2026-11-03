@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vasil S N — Portfolio
 
-## Getting Started
+Personal portfolio for **Vasil S N**: dark, futuristic, App Router site covering full-stack, GenAI/agents, and ML work.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build   # production build
+npm run lint    # ESLint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+Copy `.env.example` → `.env.local` and fill in:
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | [Resend](https://resend.com/api-keys) API key for the contact form |
+| `CONTACT_TO_EMAIL` | Inbox for form submissions (`sayedvasil@gmail.com`) |
+| `CONTACT_FROM_EMAIL` | Verified Resend sender (default `onboarding@resend.dev`) |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Get a Resend key: create an account at [resend.com](https://resend.com), open **API Keys**, create a key, paste it into `.env.local`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Assets to drop in later
 
-## Deploy on Vercel
+| Path | What |
+| --- | --- |
+| `public/images/me.jpg` | Hero / about photo |
+| `public/cv.pdf` | Resume PDF (`/resume` + Download CV) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Until they exist, the UI shows a monogram placeholder and a “resume coming soon” state (resume page in a later phase).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Edit content
+
+All copy lives in `src/data/*` — do not hard-code facts in components. See `PROJECT_LOG.txt` for structure and TODOs.
+
+## Deploy (Vercel)
+
+1. Push to GitHub.
+2. Import the repo in Vercel.
+3. Add the env vars above.
+4. Deploy. Optional: attach a custom domain later.
+
+Full deploy checklist lands in Phase 5.
