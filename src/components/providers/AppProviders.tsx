@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { Atmosphere } from "@/components/effects/Atmosphere";
 import { IntroLoader } from "@/components/effects/IntroLoader";
+import { PageTransition } from "@/components/effects/PageTransition";
 import { ScrollProgress } from "@/components/effects/ScrollProgress";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
 import { CommandPalette } from "@/components/command-palette/CommandPalette";
@@ -22,7 +23,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <Navbar />
           <CommandPalette />
           <div className="relative z-10 flex min-h-full flex-1 flex-col">
-            {children}
+            <PageTransition>{children}</PageTransition>
           </div>
         </SmoothScroll>
       </CommandPaletteProvider>

@@ -19,6 +19,8 @@ export type Project = {
   features?: string[];
   pipeline?: string[];
   useCases?: string[];
+  /** Optional results/metrics shown on the case study. Only rendered when set. */
+  highlights?: string[];
   tech: string[];
   repoUrl?: string;
   image?: string;

@@ -3,23 +3,29 @@ PROJECT LOG — Vasil S N Portfolio
 ================================================================================
 
 NEXT STEPS (resume here)
-  Current phase: PHASE 3 — Projects grid + case studies.
-  Status: STEP 0, 1, 2 COMPLETE. `npm run lint` clean, `npm run build` clean,
-          `npm run dev` serves / with HTTP 200 and no runtime errors.
-  Do next:
-    1. Build the Projects section on the home page (filter tabs + Motion layout
-       grid) from src/data/projects.ts, replacing the sr-only #projects stub
-       in src/app/page.tsx.
-    2. Build project cards (deterministic gradient cover, tech chips, category,
-       Featured badge, Case study link, conditional GitHub link, tilt+glow).
-    3. Add "More projects in progress" card linking to profile.github.
-    4. Add /projects/[slug] route with generateStaticParams + generateMetadata.
-    5. Light page transitions + wire projects into the Command Palette group
-       (already partially wired — verify).
-    6. Run lint + build, commit "feat: projects grid and case studies",
-       update this log.
-  Then: PHASE 4 (research, skills, certs, contact, resume, SEO assets),
-        PHASE 5 (polish + deploy prep).
+  Current phase: PHASE 4 — remaining sections, contact, resume, SEO assets.
+  Status: STEP 0/1/2 + PHASE 3 COMPLETE. `npm run lint` clean, `npm run build`
+          clean, all 6 case studies prerendered, dev runtime verified.
+  Do next (home page order after Projects):
+    1. RESEARCH section from src/data/research.ts (no "Published" badge; support
+       optional status/paperUrl), index "04".
+    2. SKILLS section from src/data/skills.ts (grouped grid + devicon icons with
+       text-chip fallback + slow marquee that pauses on hover + "Currently
+       exploring" strip), index "05".
+    3. CERTIFICATIONS from src/data/certifications.ts ("Verify ↗"), index "06".
+       Titles are TODO placeholders — render gracefully, do NOT invent titles.
+    4. CONTACT: copy-email + toast, GitHub, LinkedIn, and a form (Name, Email,
+       Subject, Message, optional Company, honeypot) validated with zod on
+       client AND server via src/app/api/contact/route.ts (rate limit 5/hour/IP,
+       silent honeypot reject, Resend send, friendly 500 when key missing).
+    5. FOOTER: socials, "(c) 2026 Vasil S N", "Built with Next.js", back-to-top.
+    6. /resume page with embedded PDF viewer + toolbar + "coming soon" fallback
+       (check /cv.pdf existence server-side); make hero CTA + palette graceful.
+    7. not-found.tsx (terminal-style 404), opengraph-image.tsx, sitemap.ts,
+       robots.ts, favicon gradient "V" monogram.
+    8. Run lint + build, commit "feat: research, skills, certs, contact, resume,
+       seo assets", update this log.
+  Then: PHASE 5 (polish + deploy prep).
   NOTE (build gotcha): if the build fails with "require() of ES Module
         magic-string/dist/index.mjs not supported", delete the .next cache
         (`Remove-Item -Recurse -Force .next`) and rebuild. The package.json
@@ -103,6 +109,38 @@ KNOWN TODOs / PLACEHOLDERS
 --------------------------------------------------------------------------------
 CHANGELOG (newest first)
 --------------------------------------------------------------------------------
+
+[2026-11-03 — PHASE 3: projects grid + case studies]
+  What: Projects section with animated category filters and Motion layout
+        re-flow; deterministic abstract covers; case-study routes; light page
+        transitions.
+  New files:
+    - src/components/projects/ProjectCover.tsx (FNV-1a slug hash -> stable
+      gradient/pattern art; uses project.image when present)
+    - src/components/projects/ProjectCard.tsx (glass card, tilt <=6deg +
+      cursor glow; desktop/fine-pointer only; hidden GitHub link when no repo)
+    - src/components/sections/Projects.tsx (filters + Motion grid + "More
+      projects in progress" GitHub card)
+    - src/components/effects/PageTransition.tsx (fade + rise on route change)
+    - src/app/projects/[slug]/page.tsx (generateStaticParams + generateMetadata,
+      Overview / What I built / Pipeline / Use cases / Highlights / Tech Stack,
+      prev-next nav, Back to projects, notFound() on unknown slug)
+  Changed:
+    - src/app/page.tsx (renders <Projects />, drops the #projects sr-only stub)
+    - src/components/providers/AppProviders.tsx (wraps children in
+      PageTransition)
+    - src/data/projects.ts (added optional `highlights?: string[]` so the
+      case-study "Highlights" section can be filled later; nothing invented)
+  Decisions:
+    - `export const instant = false` on the case-study route: the whole page
+      derives from params, so there is no meaningful static shell. Silences the
+      Next 16 dev "URL data during prerender" advisory. Pages stay prerendered.
+    - "Tech Stack" is presented once (labelled chips in the hero) instead of
+      duplicating the same chip list in a second section.
+    - Cover art is decorative (aria-hidden, alt="") — the card heading carries
+      the project name.
+  Result: lint clean; build clean; 6 case studies prerendered; dev runtime
+          verified (home + project pages 200, unknown slug -> 404).
 
 [2026-11-03 — STEP 0/1/2: context recovery, security, stabilize phases 1-2]
   What: Took over from Cursor session. Recovered context; secured env vars;
