@@ -23,8 +23,15 @@ import { useCommandPalette } from "./CommandPaletteProvider";
 /**
  * Global command palette (⌘K / Ctrl+K).
  * Groups: Navigate, Projects, Actions, Social.
+ *
+ * `cvAvailable` is resolved on the server; the "Download CV" action is hidden
+ * when `public/cv.pdf` is missing (the "Open Resume" action still works).
  */
-export function CommandPalette() {
+export function CommandPalette({
+  cvAvailable,
+}: {
+  cvAvailable: boolean;
+}) {
   const { open, setOpen } = useCommandPalette();
   const router = useRouter();
   const lenis = useLenis();
@@ -135,14 +142,16 @@ export function CommandPalette() {
             <FileText className="size-4 text-muted" aria-hidden />
             Open Resume
           </Command.Item>
-          <Command.Item
-            value="Download CV"
-            onSelect={() => runAction("download-cv")}
-            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-text aria-selected:bg-white/5"
-          >
-            <Download className="size-4 text-muted" aria-hidden />
-            Download CV
-          </Command.Item>
+          {cvAvailable ? (
+            <Command.Item
+              value="Download CV"
+              onSelect={() => runAction("download-cv")}
+              className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-text aria-selected:bg-white/5"
+            >
+              <Download className="size-4 text-muted" aria-hidden />
+              Download CV
+            </Command.Item>
+          ) : null}
           <Command.Item
             value="Copy Email"
             onSelect={() => runAction("copy-email")}

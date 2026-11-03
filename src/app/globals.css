@@ -189,6 +189,28 @@ body {
 }
 
 /* =========================================================
+   Marquee (Skills) — slow infinite scroll, pauses on hover
+   ========================================================= */
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 46s linear infinite;
+  will-change: transform;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* =========================================================
    Reduced motion
    ========================================================= */
 @media (prefers-reduced-motion: reduce) {
@@ -203,5 +225,10 @@ body {
 
   .site-atmosphere__spotlight {
     display: none;
+  }
+
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
   }
 }

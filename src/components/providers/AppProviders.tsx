@@ -12,7 +12,14 @@ import { Navbar } from "@/components/layout/Navbar";
 import { ToastProvider } from "@/components/ui/Toast";
 
 /** Client-side shell: scroll, nav, palette, toasts, atmosphere. */
-export function AppProviders({ children }: { children: ReactNode }) {
+export function AppProviders({
+  children,
+  cvAvailable,
+}: {
+  children: ReactNode;
+  /** Whether `public/cv.pdf` exists — resolved on the server. */
+  cvAvailable: boolean;
+}) {
   return (
     <ToastProvider>
       <CommandPaletteProvider>
@@ -21,7 +28,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <Atmosphere />
           <ScrollProgress />
           <Navbar />
-          <CommandPalette />
+          <CommandPalette cvAvailable={cvAvailable} />
           <div className="relative z-10 flex min-h-full flex-1 flex-col">
             <PageTransition>{children}</PageTransition>
           </div>

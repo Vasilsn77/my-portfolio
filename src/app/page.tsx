@@ -1,23 +1,33 @@
 import { About } from "@/components/sections/About";
+import { Certifications } from "@/components/sections/Certifications";
+import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
 import { Hero } from "@/components/sections/Hero";
 import { Projects } from "@/components/sections/Projects";
+import { Research } from "@/components/sections/Research";
+import { Skills } from "@/components/sections/Skills";
+import { Footer } from "@/components/layout/Footer";
+import { hasCvFile } from "@/lib/assets";
 
 /**
- * Home page — sections added phase by phase.
- * Remaining: Research, Skills, Certifications, Contact, Footer.
+ * Home page. Section order per the project brief:
+ * Hero → About → Experience → Projects → Research → Skills → Certifications →
+ * Contact → Footer.
  */
 export default function Home() {
+  const cvAvailable = hasCvFile();
+
   return (
     <main className="flex-1">
-      <Hero />
+      <Hero cvAvailable={cvAvailable} />
       <About />
       <Experience />
       <Projects />
-
-      {/* Placeholders so nav / command palette section targets exist early */}
-      <section id="research" className="sr-only" aria-hidden="true" />
-      <section id="contact" className="sr-only" aria-hidden="true" />
+      <Research />
+      <Skills />
+      <Certifications />
+      <Contact />
+      <Footer />
     </main>
   );
 }

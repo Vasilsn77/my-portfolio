@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLenis } from "lenis/react";
 import { ArrowDownRight, Download } from "lucide-react";
@@ -15,8 +16,11 @@ import { Reveal } from "@/components/effects/Reveal";
 /**
  * Hero: scramble name, rotating roles, CTAs, availability pill,
  * and photo-or-monogram visual.
+ *
+ * `cvAvailable` is resolved on the server so the CV button degrades to the
+ * resume page (which shows a friendly "coming soon" state) instead of 404ing.
  */
-export function Hero() {
+export function Hero({ cvAvailable }: { cvAvailable: boolean }) {
   const lenis = useLenis();
   // Start false so a missing /images/me.jpg never hits next/image.
   const [photoOk, setPhotoOk] = useState(false);
@@ -84,14 +88,24 @@ export function Hero() {
               <ArrowDownRight className="size-4" aria-hidden />
             </MagneticButton>
 
-            <a
-              href={profile.cvSrc}
-              download
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm text-text transition-colors hover:bg-white/5"
-            >
-              <Download className="size-4" aria-hidden />
-              Download CV
-            </a>
+            {cvAvailable ? (
+              <a
+                href={profile.cvSrc}
+                download
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm text-text transition-colors hover:bg-white/5"
+              >
+                <Download className="size-4" aria-hidden />
+                Download CV
+              </a>
+            ) : (
+              <Link
+                href="/resume"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm text-text transition-colors hover:bg-white/5"
+              >
+                <Download className="size-4" aria-hidden />
+                Resume
+              </Link>
+            )}
           </div>
         </Reveal>
       </div>

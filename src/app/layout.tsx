@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { AppProviders } from "@/components/providers/AppProviders";
 import { profile } from "@/data/profile";
+import { hasCvFile } from "@/lib/assets";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -36,6 +37,11 @@ export const metadata: Metadata = {
     description: profile.headline,
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: `${profile.name} — ${profile.siteTagline}`,
+    description: profile.headline,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -45,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg text-text">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders cvAvailable={hasCvFile()}>{children}</AppProviders>
       </body>
     </html>
   );

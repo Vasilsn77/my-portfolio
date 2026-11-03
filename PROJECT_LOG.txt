@@ -3,34 +3,39 @@ PROJECT LOG — Vasil S N Portfolio
 ================================================================================
 
 NEXT STEPS (resume here)
-  Current phase: PHASE 4 — remaining sections, contact, resume, SEO assets.
-  Status: STEP 0/1/2 + PHASE 3 COMPLETE. `npm run lint` clean, `npm run build`
-          clean, all 6 case studies prerendered, dev runtime verified.
-  Do next (home page order after Projects):
-    1. RESEARCH section from src/data/research.ts (no "Published" badge; support
-       optional status/paperUrl), index "04".
-    2. SKILLS section from src/data/skills.ts (grouped grid + devicon icons with
-       text-chip fallback + slow marquee that pauses on hover + "Currently
-       exploring" strip), index "05".
-    3. CERTIFICATIONS from src/data/certifications.ts ("Verify ↗"), index "06".
-       Titles are TODO placeholders — render gracefully, do NOT invent titles.
-    4. CONTACT: copy-email + toast, GitHub, LinkedIn, and a form (Name, Email,
-       Subject, Message, optional Company, honeypot) validated with zod on
-       client AND server via src/app/api/contact/route.ts (rate limit 5/hour/IP,
-       silent honeypot reject, Resend send, friendly 500 when key missing).
-    5. FOOTER: socials, "(c) 2026 Vasil S N", "Built with Next.js", back-to-top.
-    6. /resume page with embedded PDF viewer + toolbar + "coming soon" fallback
-       (check /cv.pdf existence server-side); make hero CTA + palette graceful.
-    7. not-found.tsx (terminal-style 404), opengraph-image.tsx, sitemap.ts,
-       robots.ts, favicon gradient "V" monogram.
-    8. Run lint + build, commit "feat: research, skills, certs, contact, resume,
-       seo assets", update this log.
-  Then: PHASE 5 (polish + deploy prep).
+  Current phase: PHASE 5 — polish + deploy prep.
+  Status: STEP 0/1/2 + PHASE 3 + PHASE 4 COMPLETE. `npm run lint` clean,
+          `npm run build` clean (16 static pages generated), dev runtime
+          smoke-tested for /, /resume, /projects/[slug], /sitemap.xml,
+          /robots.txt, /icon, /opengraph-image, 404 and /api/contact
+          (400 on invalid, silent 200 on honeypot, 400 on malformed JSON).
+  Do next:
+    1. AUDIT with reduced-motion ON, at 360 / 768 / 1280 / 1920 widths, and
+       with keyboard-only navigation. Fix anything broken.
+    2. PERFORMANCE pass: no layout shift, lazy-load below-the-fold images,
+       minimize client components, avoid needless re-renders, keep the cursor
+       spotlight + Lenis jank-free. Target Lighthouse 90+ perf, 95+ a11y /
+       best-practices, 100 SEO. Complete metadata (title template, description,
+       OG/Twitter, canonical via NEXT_PUBLIC_SITE_URL).
+    3. CLEANUP: remove dead code, unused deps, stray console logs. `npm run lint`
+       and `npm run build` must pass clean.
+    4. README.md: full "Deploy to Vercel" checklist (create GitHub repo + push,
+       import in Vercel, add the 4 env vars in Vercel project settings, pick a
+       *.vercel.app project name, optional custom domain later) PLUS where to
+       add the photo (public/images/me.jpg) and CV (public/cv.pdf).
+    5. Update this log (final structure, remaining TODOs) and commit
+       "chore: polish and deploy prep".
+  Open items only the owner can supply: public/images/me.jpg, public/cv.pdf,
+  certification titles, research status/paperUrl, PUC rank 12 vs 13, LTM role
+  title + joining date. The CV/photo paths already degrade gracefully.
   NOTE (build gotcha): if the build fails with "require() of ES Module
         magic-string/dist/index.mjs not supported", delete the .next cache
         (`Remove-Item -Recurse -Force .next`) and rebuild. The package.json
         `overrides` pin to magic-string@0.30.21 already fixes resolution;
         Turbopack's persistent cache can hold the stale error.
+  NOTE (Next 16 + cacheComponents): route segment configs like
+        `export const runtime = "nodejs"` are NOT allowed and fail the build.
+        Do not add them to route handlers.
 
 Purpose
   Production-quality personal portfolio: dark, futuristic, recruiter-ready.
@@ -59,15 +64,26 @@ FOLDER STRUCTURE
     cv.pdf                 TODO — drop resume PDF here
   src/
     app/                   Routes, layout, globals.css
+      api/contact/         POST handler (zod + rate limit + Resend)
+      projects/[slug]/     Case-study route (generateStaticParams/Metadata)
+      resume/              Embedded PDF viewer + "coming soon" fallback
+      icon.tsx             Favicon (gradient "V" monogram, next/og)
+      opengraph-image.tsx  1200x630 social card (next/og)
+      sitemap.ts           home + resume + project slugs
+      robots.ts            allow all, disallow /api/, sitemap ref
+      not-found.tsx        terminal-style 404
     components/
-      layout/              Navbar (Footer later)
-      sections/            Hero, About, Experience (+ later sections)
-      ui/                  Buttons, headings, scramble, counters, toast
+      layout/              Navbar, Footer
+      sections/            Hero, About, Experience, Projects, Research,
+                           Skills, Certifications, Contact
+      projects/            ProjectCard, ProjectCover
+      contact/             ContactForm (client)
+      ui/                  Buttons, headings, scramble, counters, toast, brand
       effects/             Lenis, Reveal, loader, atmosphere, progress
       command-palette/     ⌘K palette + provider
       providers/           AppProviders shell
     data/                  ALL editable content (typed)
-    lib/                   utils, hooks, validators, scroll helpers
+    lib/                   utils, hooks, validators, scroll helpers, assets
 
 --------------------------------------------------------------------------------
 DESIGN SYSTEM SUMMARY
@@ -104,11 +120,63 @@ KNOWN TODOs / PLACEHOLDERS
   [ ] Certification titles (Scaler ×2, HackerRank) — placeholders in data
   [ ] Research paper status / paperUrl when known
   [ ] Optional project screenshot images (Project.image field)
-  [ ] Phases 3–5: projects grid/case studies, remaining sections, polish, deploy
+  [x] Phases 3–4: projects grid/case studies, remaining sections, contact,
+      resume viewer, SEO assets — DONE
+  [ ] Phase 5: polish + deploy prep
 
 --------------------------------------------------------------------------------
 CHANGELOG (newest first)
 --------------------------------------------------------------------------------
+
+[2026-11-03 — PHASE 4: research, skills, certs, contact, resume, SEO assets]
+  What: Completed the home page after Projects and added the resume viewer,
+        contact pipeline, and SEO/social assets. `npm run lint` clean,
+        `npm run build` clean (16 pages generated).
+  New files:
+    - src/lib/assets.ts (server-only hasCvFile() -> checks public/cv.pdf)
+    - src/components/sections/Research.tsx (index 04; NO "Published" badge;
+      optional status/paperUrl supported; expandable dataset & methods)
+    - src/components/sections/Skills.tsx (index 05; grouped grid, devicon
+      icons via plain <img> with onError text-chip fallback, infinite marquee,
+      "Currently exploring" strip) — uses .marquee/.marquee-track from globals
+    - src/components/sections/Certifications.tsx (index 06; "Verify ↗" links;
+      renders TODO placeholder titles gracefully — titles NOT invented)
+    - src/components/contact/ContactForm.tsx (client; zod, honeypot, inline
+      errors, loading/success/error states, "Try again" retry)
+    - src/components/sections/Contact.tsx (index 07; copy-email + toast,
+      GitHub, LinkedIn, form)
+    - src/components/layout/Footer.tsx (socials, © 2026, back-to-top via Lenis)
+    - src/app/api/contact/route.ts (zod + per-IP in-memory rate limit 5/hour,
+      silent honeypot 200, Resend send with replyTo = visitor email, clean
+      HTML + plain text, friendly 500 when env is unconfigured — logs a
+      warning WITHOUT printing any secret)
+    - src/app/resume/page.tsx (toolbar + embedded PDF, "coming soon" fallback)
+    - src/app/not-found.tsx (terminal-style 404)
+    - src/app/opengraph-image.tsx (1200x630 next/og social card)
+    - src/app/icon.tsx (gradient "V" monogram favicon)
+    - src/app/sitemap.ts, src/app/robots.ts
+  Changed:
+    - src/app/page.tsx -> renders Hero, About, Experience, Projects, Research,
+      Skills, Certifications, Contact, Footer; computes cvAvailable server-side
+    - src/app/layout.tsx -> twitter metadata + AppProviders cvAvailable
+    - src/components/providers/AppProviders.tsx -> accepts cvAvailable
+    - src/components/sections/Hero.tsx -> accepts cvAvailable; shows
+      "Download CV" only when the file exists, otherwise links to /resume
+    - src/components/command-palette/CommandPalette.tsx -> accepts cvAvailable;
+      "Download CV" action hidden when the file is missing
+    - src/app/globals.css -> added .marquee/.marquee-track (46s linear infinite,
+      pauses on hover/focus-within, disabled under prefers-reduced-motion)
+  Removed:
+    - src/app/favicon.ico (replaced by src/app/icon.tsx)
+  Verified at runtime: /, /resume, /projects/llm-unit-test-generation,
+    /sitemap.xml, /robots.txt, /icon, /opengraph-image all 200; unknown route
+    404; POST /api/contact -> 400 invalid, silent 200 honeypot, 400 malformed.
+  Decision: cv availability is resolved on the server and threaded down, so the
+    hero CTA, command palette and /resume all degrade gracefully before the
+    user drops public/cv.pdf in place.
+  Build gotcha hit + fixed: `export const runtime = "nodejs"` in the contact
+    route is rejected by Next 16 cacheComponents ("Route segment config
+    runtime is not compatible"). Removed; node is the default for handlers.
 
 [2026-11-03 — PHASE 3: projects grid + case studies]
   What: Projects section with animated category filters and Motion layout
