@@ -4,15 +4,15 @@ PROJECT LOG — Vasil S N Portfolio
 
 NEXT STEPS (resume here)
   Current phase: PHASE 7 COMPLETE — design refresh + bug-fix pass (11 tasks +
-                 polish) applied locally; lint/build/prod-test green; pending
-                 commit + push.
+                 polish) committed and pushed to GitHub (commit 2ae0528).
   Status: `npm run lint` clean, `npm run build` clean (17 routes generated).
           Production server smoke-tested (`npm start`): /, /resume,
           /resume/download, /projects/[slug], /robots.txt, /sitemap.xml,
           /icon.svg, /opengraph-image all 200; unknown route 404.
+          origin/main is up to date; Vercel auto-redeploys on push.
   Do next:
-    1. COMMIT + PUSH the design refresh ("feat: design refresh and bug fixes")
-       to origin/main — every push to main redeploys on Vercel.
+    1. Confirm the Vercel deployment picked up commit 2ae0528 (check the live
+       site after a minute).
     2. Fill the remaining placeholders (see KNOWN TODOs below): certification
        titles, research status/paperUrl, PUC rank 12 vs 13, LTM role title +
        joining date. They all live in src/data/*.
@@ -50,7 +50,7 @@ How to run
 DEPLOYMENT
 --------------------------------------------------------------------------------
   Repo URL:   https://github.com/Vasilsn77/my-portfolio  (branch: main)
-  Last push:  f31a3f9 (2026-11-03)
+  Last push:  2ae0528 (2026-11-05) — "feat: design refresh and bug fixes"
   Host:       Vercel
   Required env vars (Production + Preview + Development):
     RESEND_API_KEY        Resend API key (re_...). Server-only; never commit.
