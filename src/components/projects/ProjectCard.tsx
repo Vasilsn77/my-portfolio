@@ -6,7 +6,7 @@ import { motion, useMotionValue, useSpring } from "motion/react";
 import { ArrowUpRight, Star } from "lucide-react";
 import { GithubIcon } from "@/components/ui/BrandIcons";
 import { ProjectCover } from "@/components/projects/ProjectCover";
-import type { Project } from "@/data/projects";
+import type { Project, ProjectCategory } from "@/data/projects";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,14 @@ import { cn } from "@/lib/utils";
 /** Max tilt in either axis (degrees) — deliberately restrained. */
 const MAX_TILT = 6;
 const VISIBLE_TECH = 4;
+
+/** Category → accent tint for the badge (matches the project covers). */
+const CATEGORY_TINT: Record<ProjectCategory, string> = {
+  "AI & ML": "border-accent-violet/35 bg-accent-violet/10 text-accent-violet",
+  "Full Stack & Apps": "border-accent-cyan/35 bg-accent-cyan/10 text-accent-cyan",
+  "Systems & Security":
+    "border-accent-emerald/35 bg-accent-emerald/10 text-accent-emerald",
+};
 
 type ProjectCardProps = {
   project: Project;
@@ -23,6 +31,7 @@ type ProjectCardProps = {
 /**
  * Glass project card with a soft cursor-following glow and a gentle tilt
  * (desktop + fine pointer only; disabled for reduced motion).
+ * Featured cards get a slowly rotating gradient border.
  */
 export function ProjectCard({ project, className }: ProjectCardProps) {
   const reducedMotion = useReducedMotion();
@@ -60,7 +69,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
   const extraTech = project.tech.length - visibleTech.length;
   const caseStudyHref = `/projects/${project.slug}`;
 
-  return (
+  const card = (
     <motion.article
       ref={cardRef}
       onPointerMove={handlePointerMove}
@@ -75,37 +84,46 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
           : undefined
       }
       className={cn(
-        "glass group relative flex flex-col overflow-hidden rounded-2xl transition-colors duration-300 hover:border-white/15",
+        "card group relative flex h-full flex-col overflow-hidden transition-colors duration-300",
         className,
       )}
     >
       <div
         ref={glowRef}
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 z-[1] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
           background:
-            "radial-gradient(320px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(34,211,238,0.14), transparent 65%)",
+            "radial-gradient(320px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(168,85,247,0.16), transparent 65%)",
         }}
       />
 
       <div className="relative">
-        <ProjectCover slug={project.slug} image={project.image} />
+        <ProjectCover
+          slug={project.slug}
+          image={project.image}
+          category={project.category}
+        />
 
         {project.featured ? (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full border border-accent-cyan/30 bg-bg/70 px-2.5 py-1 text-[11px] font-medium text-accent-cyan backdrop-blur-sm">
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full border border-accent-violet/35 bg-bg/70 px-2.5 py-1 text-[11px] font-medium text-accent-violet backdrop-blur-sm">
             <Star className="size-3" aria-hidden />
             Featured
           </span>
         ) : null}
 
-        <span className="absolute top-3 right-3 rounded-full border border-border bg-bg/70 px-2.5 py-1 font-mono text-[10px] tracking-wider text-muted uppercase backdrop-blur-sm">
+        <span
+          className={cn(
+            "absolute top-3 right-3 rounded-full border px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase backdrop-blur-sm",
+            CATEGORY_TINT[project.category],
+          )}
+        >
           {project.category}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="font-heading text-lg leading-snug font-semibold text-text">
+        <h3 className="font-heading text-lg leading-snug font-semibold text-heading">
           {project.title}
         </h3>
 
@@ -132,7 +150,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
         <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
           <Link
             href={caseStudyHref}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-text transition-colors hover:text-accent-cyan after:absolute after:inset-0 after:content-['']"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-heading transition-colors hover:text-accent-violet after:absolute after:inset-0 after:content-['']"
           >
             Case study
             <ArrowUpRight
@@ -148,7 +166,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${project.title} on GitHub`}
-              className="relative z-10 rounded-full border border-border p-2 text-muted transition-colors hover:border-white/20 hover:text-text"
+              className="relative z-10 rounded-full border border-border p-2 text-muted transition-colors hover:border-border-hover hover:text-heading"
             >
               <GithubIcon className="size-4" />
             </a>
@@ -156,5 +174,13 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
         </div>
       </div>
     </motion.article>
+  );
+
+  if (!project.featured) return card;
+
+  return (
+    <div className={cn("gradient-border h-full rounded-[26px]", className)}>
+      {card}
+    </div>
   );
 }

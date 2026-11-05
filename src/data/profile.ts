@@ -3,6 +3,11 @@
  * Edit this file to update hero copy, contact links, and availability.
  */
 
+import { projects } from "@/data/projects";
+
+/** TODO (confirm): PUC state rank — stored as 12. Confirm 12 vs 13. */
+const PUC_STATE_RANK = 12;
+
 export type NavLink = {
   id: string;
   label: string;
@@ -14,6 +19,10 @@ export type EducationItem = {
   detail: string;
   years: string;
   result?: string;
+  /** Accent color for the icon tile + grade chip. */
+  accent: "violet" | "indigo" | "cyan";
+  /** Lucide icon key rendered in the tile. */
+  icon: "GraduationCap" | "BookOpen" | "School";
 };
 
 export type StatTile =
@@ -60,6 +69,21 @@ export const profile = {
     { label: "Contact Me", href: "#contact", variant: "primary" as const },
     { label: "Download CV", href: "/cv.pdf", variant: "secondary" as const },
   ],
+  /** Content for the hero "code window" card (decorative, on-brand). */
+  codeCard: {
+    filename: "vasil.ts",
+    varName: "vasil",
+    entries: [
+      { key: "role", type: "string" as const, value: "Full Stack + GenAI" },
+      {
+        key: "focus",
+        type: "array" as const,
+        value: ["AI Agents", "LLM Apps", "Web"],
+      },
+      { key: "location", type: "string" as const, value: "Bengaluru" },
+      { key: "openToWork", type: "boolean" as const, value: true },
+    ],
+  },
   aboutBio: [
     "Hi, I'm Vasil, a Computer Science graduate from PES University, Bengaluru, and I'll be joining LTM as a software engineer. I like building at the intersection of full-stack development and generative AI, and I'm especially drawn to AI agents: systems that don't just answer questions, but plan and take action.",
     "My work so far spans an LLM-based framework for automated unit test generation (research paper), a real-time social media analytics platform built during my research internship at C3I, and full-stack apps with Flask and MySQL. I learn best by building, so I'm using the time before I join to revisit fundamentals, pick up new tools, and ship projects.",
@@ -76,24 +100,32 @@ export const profile = {
       "Deepening full-stack skills (Next.js, Node, databases)",
     ],
   } satisfies RightNowCard,
-  /**
-   * TODO (confirm): PUC state rank — currently stored as 12.
-   * Confirm whether this should be 12 or 13 before public launch.
-   */
-  pucStateRank: 12,
+  /** TODO (confirm): PUC state rank — stored as 12. Confirm 12 vs 13. */
+  pucStateRank: PUC_STATE_RANK,
   stats: [
     {
       kind: "number",
       value: 7.81,
       decimals: 2,
-      label: "CGPA, PES University",
+      label: "CGPA",
     },
     {
       kind: "number",
       value: 97.4,
       decimals: 1,
       suffix: "%",
-      label: "PUC · State Rank 12",
+      label: "PUC Score",
+    },
+    {
+      kind: "text",
+      value: `${PUC_STATE_RANK}th`,
+      label: "State Rank, PUC",
+    },
+    {
+      kind: "number",
+      value: projects.length,
+      decimals: 0,
+      label: "Projects Built",
     },
     {
       kind: "number",
@@ -102,9 +134,11 @@ export const profile = {
       label: "Research Paper",
     },
     {
-      kind: "text",
-      value: "LTM",
-      label: "Incoming",
+      kind: "number",
+      value: 94.6,
+      decimals: 1,
+      suffix: "%",
+      label: "ICSE",
     },
   ] satisfies StatTile[],
   education: [
@@ -113,18 +147,24 @@ export const profile = {
       detail: "B.Tech in Computer Science & Engineering",
       years: "2022–2026",
       result: "CGPA 7.81",
+      accent: "violet",
+      icon: "GraduationCap",
     },
     {
       school: "Presidency PU College",
       detail: "Pre-University, PCMB",
       years: "2020–2022",
-      result: "97.4% (State 12th Rank)",
+      result: "97.4% · State 12th Rank",
+      accent: "indigo",
+      icon: "BookOpen",
     },
     {
       school: "Vidyanidhi Public School",
       detail: "ICSE",
       years: "2010–2020",
       result: "94.6%",
+      accent: "cyan",
+      icon: "School",
     },
   ] satisfies EducationItem[],
   navLinks: [

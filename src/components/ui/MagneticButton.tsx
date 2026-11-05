@@ -59,9 +59,9 @@ export function MagneticButton({
 
   const sharedClass = cn(
     "relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium",
-    "bg-[linear-gradient(135deg,#22D3EE,#8B5CF6)] text-[#05060A]",
-    "shadow-[0_0_28px_rgba(34,211,238,0.22)] transition-shadow hover:shadow-[0_0_36px_rgba(139,92,246,0.28)]",
-    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-cyan",
+    "bg-[linear-gradient(90deg,#A855F7,#4F6FEF)] text-white",
+    "shadow-[0_0_28px_rgba(168,85,247,0.28)] transition-shadow hover:shadow-[0_0_36px_rgba(79,111,239,0.34)]",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-violet",
     className,
   );
 

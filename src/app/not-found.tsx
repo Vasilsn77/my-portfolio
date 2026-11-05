@@ -27,16 +27,16 @@ export default function NotFound() {
 
         <div className="p-6 font-mono text-sm leading-relaxed">
           <p className="text-muted">
-            <span className="text-accent-cyan">vasil@portfolio</span>
+            <span className="text-accent-violet">vasil@portfolio</span>
             {":~$ curl -I "}
-            <span className="text-text">/this-route</span>
+            <span className="text-heading">/this-route</span>
           </p>
           <p className="mt-3 text-muted">HTTP/1.1 404 Not Found</p>
-          <p className="mt-1 text-text">
+          <p className="mt-1 text-heading">
             Error: no such page. It was moved, renamed, or never existed.
           </p>
           <p className="mt-5 text-muted">
-            <span className="text-accent-cyan">vasil@portfolio</span>
+            <span className="text-accent-violet">vasil@portfolio</span>
             {":~$ "}
             <span className="animate-pulse">▋</span>
           </p>
@@ -45,7 +45,7 @@ export default function NotFound() {
 
       <Link
         href="/"
-        className="mt-6 inline-flex items-center gap-2 self-start text-sm text-text transition-colors hover:text-accent-cyan"
+        className="mt-6 inline-flex items-center gap-2 self-start text-sm text-heading transition-colors hover:text-accent-violet"
       >
         <ArrowLeft className="size-4" aria-hidden />
         cd ~ (back home)

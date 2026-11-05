@@ -26,7 +26,7 @@ export function MonogramOrb({
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 30% 25%, rgba(34,211,238,0.45), transparent 45%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.4), transparent 50%), #0B0D14",
+            "radial-gradient(circle at 30% 25%, rgba(168,85,247,0.45), transparent 45%), radial-gradient(circle at 70% 70%, rgba(79,111,239,0.4), transparent 50%), #151518",
         }}
       />
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_40%)]" />

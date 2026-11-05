@@ -10,6 +10,8 @@ import { profile } from "@/data/profile";
 import { useActiveSection } from "@/lib/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import { scrollToTarget } from "@/lib/scroll";
+import { containerClass } from "@/components/ui/Container";
+import { Logo } from "@/components/ui/Logo";
 import { useCommandPalette } from "@/components/command-palette/CommandPaletteProvider";
 
 const noopSubscribe = () => () => {};
@@ -84,8 +86,8 @@ export function Navbar() {
       >
         <div
           className={cn(
-            "mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-6",
-            "rounded-2xl border transition-colors duration-300",
+            containerClass,
+            "flex items-center justify-between gap-4 rounded-2xl border py-1.5 transition-colors duration-300",
             scrolled
               ? "glass border-border"
               : "border-transparent bg-transparent",
@@ -99,10 +101,10 @@ export function Navbar() {
                 scrollToTarget("#hero", lenis ?? null, 0);
               }
             }}
-            className="font-heading flex size-10 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#22D3EE33,#8B5CF633)] text-lg font-bold text-text"
+            className="rounded-xl transition-transform duration-300 hover:scale-[1.02]"
             aria-label={`${profile.name} — back to top`}
           >
-            <span className="text-gradient">{profile.monogram}</span>
+            <Logo withWordmark />
           </Link>
 
           <nav

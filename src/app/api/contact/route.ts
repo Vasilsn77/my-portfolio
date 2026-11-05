@@ -65,39 +65,21 @@ function escapeHtml(value: string): string {
 }
 
 type MessageFields = {
-  name: string;
   email: string;
   subject: string;
   message: string;
-  company?: string;
 };
 
 function buildHtml(fields: MessageFields): string {
-  const rows: Array<[string, string]> = [
-    ["Name", fields.name],
-    ["Email", fields.email],
-    ...(fields.company ? [["Company", fields.company]] as Array<[string, string]> : []),
-    ["Subject", fields.subject],
-  ];
-
-  const rowsHtml = rows
-    .map(
-      ([label, value]) =>
-        `<tr><td style="padding:4px 16px 4px 0;color:#8A90A2;font:600 13px Arial,sans-serif;vertical-align:top;">${escapeHtml(
-          label,
-        )}</td><td style="padding:4px 0;color:#E6E8EF;font:13px Arial,sans-serif;">${escapeHtml(
-          value,
-        )}</td></tr>`,
-    )
-    .join("");
-
-  return `<div style="background:#05060A;padding:24px;font:14px Arial,sans-serif;color:#E6E8EF;">
+  return `<div style="background:#0B0B0E;padding:24px;font:14px Arial,sans-serif;color:#E4E4E7;">
 <h1 style="margin:0 0 4px;font-size:18px;">New portfolio message</h1>
-<p style="margin:0 0 16px;color:#8A90A2;font-size:13px;">Sent from the contact form on ${escapeHtml(
+<p style="margin:0 0 16px;color:#9A9AA8;font-size:13px;">Sent from the contact form on ${escapeHtml(
     profile.name,
   )}'s portfolio.</p>
-<table style="border-collapse:collapse;margin-bottom:16px;">${rowsHtml}</table>
-<div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:16px;white-space:pre-wrap;">${escapeHtml(
+<table style="border-collapse:collapse;margin-bottom:16px;"><tr><td style="padding:4px 16px 4px 0;color:#9A9AA8;font:600 13px Arial,sans-serif;vertical-align:top;">Email</td><td style="padding:4px 0;color:#E4E4E7;font:13px Arial,sans-serif;">${escapeHtml(
+    fields.email,
+  )}</td></tr></table>
+<div style="border-top:1px solid rgba(168,85,247,0.28);padding-top:16px;white-space:pre-wrap;">${escapeHtml(
     fields.message,
   )}</div>
 </div>`;
@@ -107,10 +89,7 @@ function buildText(fields: MessageFields): string {
   return [
     "New portfolio message",
     "",
-    `Name: ${fields.name}`,
     `Email: ${fields.email}`,
-    ...(fields.company ? [`Company: ${fields.company}`] : []),
-    `Subject: ${fields.subject}`,
     "",
     fields.message,
   ].join("\n");
@@ -164,14 +143,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, email, subject, message, company } = parsed.data;
-  const fields: MessageFields = {
-    name,
-    email,
-    subject,
-    message,
-    ...(company ? { company } : {}),
-  };
+  const { email, subject, message } = parsed.data;
+  const fields: MessageFields = { email, subject, message };
 
   try {
     const resend = new Resend(apiKey);
@@ -179,7 +152,7 @@ export async function POST(request: Request) {
       from: fromEmail,
       to: toEmail,
       replyTo: email,
-      subject: `[Portfolio] ${subject}`,
+      subject,
       html: buildHtml(fields),
       text: buildText(fields),
     });

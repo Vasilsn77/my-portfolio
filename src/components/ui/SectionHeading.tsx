@@ -1,37 +1,68 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type SectionHeadingProps = {
-  index: string;
   title: string;
-  description?: string;
+  /** Substring of `title` to render with the gradient treatment. */
+  highlight?: string;
+  subtitle?: ReactNode;
+  eyebrow?: string;
+  icon?: ReactNode;
+  id?: string;
+  align?: "center" | "left";
   className?: string;
-  headingId?: string;
 };
 
-/** Mono eyebrow + Space Grotesk title used across sections. */
+/**
+ * Centered (or left-aligned) section heading: optional mono eyebrow,
+ * a large Space Grotesk title with one gradient word, and a subtitle.
+ */
 export function SectionHeading({
-  index,
   title,
-  description,
+  highlight,
+  subtitle,
+  eyebrow,
+  icon,
+  id,
+  align = "center",
   className,
-  headingId,
 }: SectionHeadingProps) {
+  const at = highlight ? title.indexOf(highlight) : -1;
+  const hasHighlight = highlight !== undefined && at !== -1;
+
   return (
-    <div className={cn("mb-12 max-w-2xl", className)}>
-      <p className="font-mono-label mb-3">
-        <span className="text-accent-cyan">{index}</span>
-        {" / "}
-        {title}
-      </p>
+    <div
+      className={cn(
+        "flex flex-col gap-4",
+        align === "center" ? "items-center text-center" : "items-start text-left",
+        className,
+      )}
+    >
+      {eyebrow ? (
+        <span className="font-mono-label inline-flex items-center gap-2">
+          {icon ? <span aria-hidden="true">{icon}</span> : null}
+          {eyebrow}
+        </span>
+      ) : null}
+
       <h2
-        id={headingId}
-        className="font-heading text-3xl font-semibold tracking-tight text-text sm:text-4xl"
+        id={id}
+        className="font-heading text-4xl font-bold tracking-tight text-heading sm:text-5xl lg:text-[3.25rem]"
       >
-        {title}
+        {hasHighlight && highlight ? (
+          <>
+            {title.slice(0, at)}
+            <span className="text-gradient">{highlight}</span>
+            {title.slice(at + highlight.length)}
+          </>
+        ) : (
+          title
+        )}
       </h2>
-      {description ? (
-        <p className="prose-width mt-4 text-base leading-relaxed text-muted sm:text-lg">
-          {description}
+
+      {subtitle ? (
+        <p className="max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
+          {subtitle}
         </p>
       ) : null}
     </div>

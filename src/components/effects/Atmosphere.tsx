@@ -52,6 +52,8 @@ export function Atmosphere() {
 
   return (
     <div className="site-atmosphere" aria-hidden="true">
+      <div className="site-atmosphere__blob site-atmosphere__blob--violet" />
+      <div className="site-atmosphere__blob site-atmosphere__blob--indigo" />
       <div className="site-atmosphere__glow" />
       <div className="site-atmosphere__grid" />
       <div ref={spotlightRef} className="site-atmosphere__spotlight" />

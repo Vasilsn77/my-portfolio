@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Download, ExternalLink, FileText } from "lucide-react";
+import { containerClass } from "@/components/ui/Container";
 import { profile } from "@/data/profile";
+import { cn } from "@/lib/utils";
 import { hasCvFile } from "@/lib/assets";
 
 export const metadata: Metadata = {
@@ -23,7 +25,7 @@ export default function ResumePage() {
   return (
     <main
       id="main-content"
-      className="mx-auto flex w-full max-w-[1100px] flex-1 flex-col px-4 pt-24 pb-16 sm:px-6 md:pt-28"
+      className={cn(containerClass, "flex flex-1 flex-col pt-24 pb-16 md:pt-28")}
     >
       <h1 className="sr-only">Resume — {profile.name}</h1>
 
@@ -38,7 +40,11 @@ export default function ResumePage() {
 
         {cvAvailable ? (
           <div className="flex flex-wrap items-center gap-2">
-            <a href={profile.cvSrc} download className={toolbarButtonClass}>
+            <a
+              href="/resume/download"
+              download="Vasil_S_N_Resume.pdf"
+              className={toolbarButtonClass}
+            >
               <Download className="size-4" aria-hidden />
               Download
             </a>
@@ -78,7 +84,7 @@ export default function ResumePage() {
           </p>
           <Link
             href="/#contact"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#22D3EE,#8B5CF6)] px-6 py-3 text-sm font-medium text-[#05060A]"
+            className="gradient-btn mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
           >
             Get in touch
           </Link>

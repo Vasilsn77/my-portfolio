@@ -13,17 +13,15 @@ import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 import { contactFormSchema } from "@/lib/validators";
 
-type TextFieldName = "name" | "email" | "subject" | "message" | "company";
+type TextFieldName = "email" | "subject" | "message";
 type FormValues = Record<TextFieldName | "website", string>;
 type FormErrors = Partial<Record<TextFieldName | "website", string>>;
 type Status = "idle" | "submitting" | "success" | "error";
 
 const EMPTY_VALUES: FormValues = {
-  name: "",
   email: "",
   subject: "",
   message: "",
-  company: "",
   website: "",
 };
 
@@ -32,26 +30,34 @@ const FIELDS: Array<{
   label: string;
   type: string;
   autoComplete?: string;
-  optional?: boolean;
+  placeholder: string;
   textarea?: boolean;
-  full?: boolean;
 }> = [
-  { name: "name", label: "Name", type: "text", autoComplete: "name" },
-  { name: "email", label: "Email", type: "email", autoComplete: "email" },
-  { name: "subject", label: "Subject", type: "text", full: true },
-  { name: "message", label: "Message", type: "text", textarea: true, full: true },
   {
-    name: "company",
-    label: "Company",
+    name: "email",
+    label: contactContent.form.emailLabel,
+    type: "email",
+    autoComplete: "email",
+    placeholder: contactContent.form.emailPlaceholder,
+  },
+  {
+    name: "subject",
+    label: contactContent.form.subjectLabel,
     type: "text",
-    autoComplete: "organization",
-    optional: true,
+    placeholder: contactContent.form.subjectPlaceholder,
+  },
+  {
+    name: "message",
+    label: contactContent.form.messageLabel,
+    type: "text",
+    placeholder: contactContent.form.messagePlaceholder,
+    textarea: true,
   },
 ];
 
 const inputClass = cn(
-  "w-full rounded-xl border border-border bg-white/[0.03] px-3.5 py-2.5 text-sm text-text",
-  "transition-colors placeholder:text-muted/70 focus:border-accent-cyan/60",
+  "w-full rounded-xl border border-border bg-surface-input px-3.5 py-2.5 text-sm text-text",
+  "transition-colors placeholder:text-muted/70 focus:border-accent-violet/70 focus:outline-none",
 );
 
 const errorTextClass = "mt-1.5 text-xs text-red-400";
@@ -59,7 +65,7 @@ const fieldId = (name: string) => `contact-${name}`;
 
 /**
  * Contact form: validated with Zod on the client, re-validated on the server.
- * Includes a hidden honeypot, inline errors, loading / success / error states.
+ * Fields are Email / Subject / Message only, plus a hidden honeypot.
  */
 export function ContactForm() {
   const reducedMotion = useReducedMotion();
@@ -151,18 +157,18 @@ export function ContactForm() {
           exit={{ opacity: 0, y: 8 }}
           transition={transition}
           role="status"
-          className="glass flex flex-col items-start gap-4 rounded-2xl p-6 sm:p-8"
+          className="card flex flex-col items-start gap-4 p-6 sm:p-8"
         >
           <span className="inline-flex size-11 items-center justify-center rounded-full border border-accent-emerald/40 bg-accent-emerald/10">
             <CircleCheck className="size-5 text-accent-emerald" aria-hidden />
           </span>
-          <p className="font-heading text-lg text-text">
+          <p className="font-heading text-lg text-heading">
             {contactContent.successMessage}
           </p>
           <button
             type="button"
             onClick={() => setStatus("idle")}
-            className="text-sm font-medium text-accent-cyan transition-colors hover:text-text"
+            className="text-sm font-medium text-accent-violet transition-colors hover:text-heading"
           >
             Send another message
           </button>
@@ -177,25 +183,22 @@ export function ContactForm() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={transition}
-          className="glass rounded-2xl p-6 sm:p-8"
+          className="card relative p-6 sm:p-8"
         >
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-5">
             {FIELDS.map((field) => {
               const error = errors[field.name];
-              const describedBy = error ? `${fieldId(field.name)}-error` : undefined;
+              const describedBy = error
+                ? `${fieldId(field.name)}-error`
+                : undefined;
 
               return (
-                <div key={field.name} className={field.full ? "sm:col-span-2" : undefined}>
+                <div key={field.name}>
                   <label
                     htmlFor={fieldId(field.name)}
                     className="font-mono-label mb-2 block"
                   >
                     {field.label}
-                    {field.optional ? (
-                      <span className="ml-1.5 tracking-normal normal-case">
-                        (optional)
-                      </span>
-                    ) : null}
                   </label>
 
                   {field.textarea ? (
@@ -207,7 +210,7 @@ export function ContactForm() {
                       onChange={handleChange}
                       aria-invalid={Boolean(error)}
                       aria-describedby={describedBy}
-                      placeholder="Tell me a little about the role or project…"
+                      placeholder={field.placeholder}
                       className={cn(inputClass, "resize-y")}
                     />
                   ) : (
@@ -220,6 +223,7 @@ export function ContactForm() {
                       onChange={handleChange}
                       aria-invalid={Boolean(error)}
                       aria-describedby={describedBy}
+                      placeholder={field.placeholder}
                       className={inputClass}
                     />
                   )}
@@ -261,7 +265,7 @@ export function ContactForm() {
               <button
                 type="button"
                 onClick={() => formRef.current?.requestSubmit()}
-                className="font-medium text-text underline underline-offset-4 transition-colors hover:text-accent-cyan"
+                className="font-medium text-heading underline underline-offset-4 transition-colors hover:text-accent-violet"
               >
                 Try again
               </button>
@@ -272,9 +276,9 @@ export function ContactForm() {
             type="submit"
             disabled={status === "submitting"}
             className={cn(
-              "mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium",
-              "bg-[linear-gradient(135deg,#22D3EE,#8B5CF6)] text-[#05060A]",
-              "transition-opacity disabled:cursor-not-allowed disabled:opacity-60",
+              "gradient-btn mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium",
+              "shadow-[0_0_28px_rgba(168,85,247,0.28)] transition-shadow hover:shadow-[0_0_36px_rgba(79,111,239,0.34)]",
+              "disabled:cursor-not-allowed disabled:opacity-60",
             )}
           >
             {status === "submitting" ? (
@@ -282,7 +286,7 @@ export function ContactForm() {
             ) : (
               <Send className="size-4" aria-hidden />
             )}
-            {status === "submitting" ? "Sending…" : "Send message"}
+            {status === "submitting" ? "Sending…" : contactContent.form.submit}
           </button>
 
           <p className="mt-4 text-xs text-muted">

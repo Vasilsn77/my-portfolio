@@ -45,11 +45,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           {toasts.map((toast) => (
             <motion.div
               key={toast.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              className="glass pointer-events-auto rounded-full px-4 py-2 text-sm text-text shadow-glow"
+              initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: 8, filter: "blur(6px)" }}
+              className="glass-elevated pointer-events-auto inline-flex items-center gap-2.5 rounded-full py-2 pr-4 pl-3 text-sm text-heading shadow-glow"
             >
+              <span
+                className="size-1.5 shrink-0 rounded-full bg-accent-violet"
+                aria-hidden="true"
+              />
               {toast.text}
             </motion.div>
           ))}

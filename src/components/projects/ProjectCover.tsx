@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ProjectCategory } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,19 +17,33 @@ function hashSlug(slug: string): number {
 
 const PATTERNS = ["grid", "dots", "diagonal"] as const;
 
+/** Base hue pair per category — keeps covers on-brand at a glance. */
+const CATEGORY_HUES: Record<ProjectCategory, { a: number; b: number }> = {
+  "AI & ML": { a: 262, b: 286 },
+  "Full Stack & Apps": { a: 182, b: 212 },
+  "Systems & Security": { a: 150, b: 174 },
+};
+
 type ProjectCoverProps = {
   slug: string;
   /** Real screenshot when available; falls back to generated art. */
   image?: string;
+  /** Tints the generated art by category. */
+  category?: ProjectCategory;
   className?: string;
 };
 
 /**
- * Abstract cover art derived from the project slug — always on-brand,
- * decorative only (the card/heading carries the project name).
+ * Abstract cover art derived from the project slug and category — always
+ * on-brand, decorative only (the card/heading carries the project name).
  * Renders the optional `image` when provided.
  */
-export function ProjectCover({ slug, image, className }: ProjectCoverProps) {
+export function ProjectCover({
+  slug,
+  image,
+  category,
+  className,
+}: ProjectCoverProps) {
   if (image) {
     return (
       <div
@@ -46,8 +61,9 @@ export function ProjectCover({ slug, image, className }: ProjectCoverProps) {
   }
 
   const hash = hashSlug(slug);
-  const hueA = 176 + (hash % 34); // cyan → blue
-  const hueB = 252 + ((hash >>> 7) % 36); // violet → purple
+  const base = CATEGORY_HUES[category ?? "AI & ML"];
+  const hueA = base.a + (hash % 16);
+  const hueB = base.b + ((hash >>> 7) % 16);
   const angle = 105 + ((hash >>> 13) % 70);
   const glowX = 18 + ((hash >>> 3) % 64);
   const glowY = 14 + ((hash >>> 11) % 56);
@@ -86,7 +102,7 @@ export function ProjectCover({ slug, image, className }: ProjectCoverProps) {
         className="absolute inset-0 opacity-[0.18] mix-blend-overlay"
         style={{ backgroundImage: patternImage, backgroundSize: patternSize }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_50%_120%,rgba(5,6,10,0.85),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_50%_120%,rgba(11,11,14,0.85),transparent_60%)]" />
     </div>
   );
 }

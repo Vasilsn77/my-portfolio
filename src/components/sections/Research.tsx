@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { ArrowUpRight, ChevronDown, FileText } from "lucide-react";
 import { Reveal } from "@/components/effects/Reveal";
+import { Card } from "@/components/ui/Card";
+import { containerClass } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { papers } from "@/data/research";
+import { cn } from "@/lib/utils";
 
 /**
  * Research: the published paper, authors, venue, dataset/methods (expandable)
@@ -14,23 +17,25 @@ export function Research() {
   return (
     <section
       id="research"
-      className="mx-auto w-full max-w-[1200px] px-4 py-24 sm:px-6 md:py-32"
+      className={cn(containerClass, "py-24 md:py-32")}
       aria-labelledby="research-heading"
     >
       <SectionHeading
-        index="04"
+        id="research-heading"
         title="Research"
-        headingId="research-heading"
-        description="Work on applying large language models to real software-engineering problems."
+        highlight="Research"
+        subtitle="Work on applying large language models to real software-engineering problems."
       />
 
-      <div className="space-y-6">
+      <div className="mt-12 space-y-6">
         {papers.map((paper) => (
           <Reveal key={paper.id}>
-            <article className="glass rounded-2xl p-6 sm:p-8">
-              <div className="flex flex-wrap items-center gap-2">
+            <Card interactive className="p-6 sm:p-8">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="flex size-11 items-center justify-center rounded-2xl border border-accent-violet/35 bg-accent-violet/10">
+                  <FileText className="size-5 text-accent-violet" aria-hidden />
+                </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-violet/30 bg-accent-violet/10 px-2.5 py-1 text-[11px] font-medium text-accent-violet">
-                  <FileText className="size-3" aria-hidden />
                   {paper.field}
                 </span>
                 {paper.status ? (
@@ -40,7 +45,7 @@ export function Research() {
                 ) : null}
               </div>
 
-              <h3 className="font-heading mt-4 text-xl leading-snug font-semibold text-text sm:text-2xl">
+              <h3 className="font-heading mt-4 text-xl leading-snug font-semibold text-heading sm:text-2xl">
                 {paper.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted sm:text-base">
@@ -57,7 +62,7 @@ export function Research() {
                         <span
                           className={
                             author === paper.highlightAuthor
-                              ? "font-medium text-accent-cyan"
+                              ? "font-medium text-accent-violet"
                               : undefined
                           }
                         >
@@ -86,7 +91,7 @@ export function Research() {
               </p>
 
               <details className="group mt-6 border-t border-border pt-5">
-                <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-medium text-text transition-colors hover:text-accent-cyan [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-medium text-heading transition-colors hover:text-accent-violet [&::-webkit-details-marker]:hidden">
                   <ChevronDown
                     className="size-4 transition-transform group-open:rotate-180"
                     aria-hidden
@@ -112,7 +117,7 @@ export function Research() {
               <div className="mt-6 flex flex-wrap items-center gap-5">
                 <Link
                   href={`/projects/${paper.caseStudySlug}`}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-text transition-colors hover:text-accent-cyan"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-heading transition-colors hover:text-accent-violet"
                 >
                   Read the case study
                   <ArrowUpRight className="size-4" aria-hidden />
@@ -122,14 +127,14 @@ export function Research() {
                     href={paper.paperUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-text"
+                    className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-heading"
                   >
                     Paper
                     <ArrowUpRight className="size-4" aria-hidden />
                   </a>
                 ) : null}
               </div>
-            </article>
+            </Card>
           </Reveal>
         ))}
       </div>

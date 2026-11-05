@@ -3,23 +3,25 @@ PROJECT LOG — Vasil S N Portfolio
 ================================================================================
 
 NEXT STEPS (resume here)
-  Current phase: PHASE 6 COMPLETE — pushed to GitHub. Ready to deploy.
-  Status: `npm run lint` clean, `npm run build` clean (16 pages generated).
-          Local `main` pushed to origin/main at commit f31a3f9.
+  Current phase: PHASE 7 COMPLETE — design refresh + bug-fix pass (11 tasks +
+                 polish) applied locally; lint/build/prod-test green; pending
+                 commit + push.
+  Status: `npm run lint` clean, `npm run build` clean (17 routes generated).
+          Production server smoke-tested (`npm start`): /, /resume,
+          /resume/download, /projects/[slug], /robots.txt, /sitemap.xml,
+          /icon.svg, /opengraph-image all 200; unknown route 404.
   Do next:
-    1. DEPLOY — on vercel.com: New Project -> import
-       https://github.com/Vasilsn77/my-portfolio, add the 4 env vars (see
-       DEPLOYMENT below), deploy, then set NEXT_PUBLIC_SITE_URL to the live URL.
+    1. COMMIT + PUSH the design refresh ("feat: design refresh and bug fixes")
+       to origin/main — every push to main redeploys on Vercel.
     2. Fill the remaining placeholders (see KNOWN TODOs below): certification
        titles, research status/paperUrl, PUC rank 12 vs 13, LTM role title +
        joining date. They all live in src/data/*.
     3. Optional later polish: real project screenshots via the `image` field on
        each project in src/data/projects.ts (ProjectCover already renders them).
-  Assets note: public/images/me.jpg and public/cv.pdf already exist and are now
+  Assets note: public/images/me.jpg and public/cv.pdf already exist and are
   committed, so the photo / CV features are live (no longer placeholders).
-  Verified in the final pass: /, /resume, /projects/[slug], /sitemap.xml,
-  /robots.txt, /icon, /opengraph-image all 200; unknown route 404; POST
-  /api/contact -> 400 invalid / silent 200 honeypot / 400 malformed JSON.
+  New in Phase 7: /resume/download route streams cv.pdf as an attachment; the
+  favicon is now src/app/icon.svg (icon.tsx removed).
   NOTE (build gotcha): if the build fails with "require() of ES Module
         magic-string/dist/index.mjs not supported", delete the .next cache
         (`Remove-Item -Recurse -Force .next`) and rebuild. The package.json
@@ -75,7 +77,8 @@ FOLDER STRUCTURE
       api/contact/         POST handler (zod + rate limit + Resend)
       projects/[slug]/     Case-study route (generateStaticParams/Metadata)
       resume/              Embedded PDF viewer + "coming soon" fallback
-      icon.tsx             Favicon (gradient "V" monogram, next/og)
+      resume/download/     NEW — streams public/cv.pdf as an attachment
+      icon.svg             Favicon (glass tile + geometric V mark)
       opengraph-image.tsx  1200x630 social card (next/og)
       sitemap.ts           home + resume + project slugs
       robots.ts            allow all, disallow /api/, sitemap ref
@@ -86,27 +89,38 @@ FOLDER STRUCTURE
                            Skills, Certifications, Contact
       projects/            ProjectCard, ProjectCover
       contact/             ContactForm (client)
-      ui/                  Buttons, headings, scramble, counters, toast, brand
+      ui/                  Container, Card, SectionHeading, Logo, BackToTop,
+                           Buttons, headings, scramble, counters, toast, brand
       effects/             Lenis, Reveal, loader, atmosphere, progress
       command-palette/     ⌘K palette + provider
       providers/           AppProviders shell
     data/                  ALL editable content (typed)
-    lib/                   utils, hooks, validators, scroll helpers, assets
+    lib/                   utils, hooks (use-image-available), validators,
+                           scroll helpers, assets
 
 --------------------------------------------------------------------------------
-DESIGN SYSTEM SUMMARY
+DESIGN SYSTEM SUMMARY (Phase 7 refresh — charcoal + violet)
 --------------------------------------------------------------------------------
-  Background:        #05060A
-  Surface:           #0B0D14
-  Elevated:          #11141D
-  Border:            rgba(255,255,255,0.08)
-  Text / muted:      #E6E8EF / #8A90A2
-  Accent gradient:   #22D3EE → #8B5CF6 (sparingly)
-  Status emerald:    #34D399 (online dots only)
-  Max content width: ~1200px
+  Background:        #0B0B0E
+  Surface / card:    #151518
+  Elevated:          #1B1B20   · input surface #111114
+  Border:            rgba(168,85,247,0.28) -> hover rgba(168,85,247,0.55)
+                     subtle hairline rgba(255,255,255,0.08)
+  Text:              heading #F4F4F5 · body #E4E4E7 · secondary #C4C4CE
+                     muted #9A9AA8
+  Accents:           violet #A855F7 (primary) · indigo #4F6FEF
+                     cyan #22D3EE (sparing) · pink #F472B6 (tiny)
+                     gold #FBBF24 (trophy only) · emerald #34D399 (dots only)
+  Eyebrow:           JetBrains Mono, uppercase, #A78BFA
+  Button gradient:   linear-gradient(90deg,#A855F7,#4F6FEF)
+  Text gradient:     linear-gradient(90deg,#C084FC,#818CF8,#38BDF8)
+  Card shadow:       0 0 40px -12px rgba(139,92,246,0.35) · radius 26px
+  Max content width: 1680px (Container / containerClass)
   Section padding:   py-24 / py-32
   Motion:            restrained; respect prefers-reduced-motion
-  Atmosphere:        fixed grid + top glow + ~3% grain + desktop spotlight
+  Atmosphere:        fixed grid + violet/indigo ambient blobs + ~3% grain
+  Category colors:   AI & ML = violet · Full Stack & Apps = cyan ·
+                     Systems & Security = emerald
 
 Where to edit content
   src/data/profile.ts
@@ -131,10 +145,66 @@ KNOWN TODOs / PLACEHOLDERS
   [x] Phases 3–4: projects grid/case studies, remaining sections, contact,
       resume viewer, SEO assets — DONE
   [x] Phase 5: polish + deploy prep — DONE
+  [x] Phase 7: design refresh + bug-fix pass (11 tasks + polish) — DONE
 
 --------------------------------------------------------------------------------
 CHANGELOG (newest first)
 --------------------------------------------------------------------------------
+
+[2026-11-05 — PHASE 7: design refresh + bug-fix pass (11 tasks + polish)]
+  What: Applied the client brief — global charcoal/violet design shift, new
+        logo, command-palette fix, container/numbering fixes, About/Contact/
+        Footer/Certifications rebuilds, download fix, project-count stat,
+        education cleanup, color/icon personality, plus extra polish. All
+        content still lives in src/data/*. Lint + build + prod smoke test green.
+  New primitives:
+    - src/components/ui/Container.tsx — containerClass (max-w-[1680px] shared)
+    - src/components/ui/Card.tsx — interactive glass card + pointer glow
+    - src/components/ui/SectionHeading.tsx — eyebrow/title/highlight/subtitle
+      (BREAKING: removed `index` / `headingId` / `description` props)
+    - src/components/ui/Logo.tsx — LogoMark + wordmark (navbar/loader/footer)
+    - src/components/ui/BackToTop.tsx — global floating back-to-top
+    - src/lib/hooks/use-image-available.ts — shared portrait probe
+    - src/app/icon.svg (NEW) — favicon; src/app/icon.tsx removed
+    - src/app/resume/download/route.ts (NEW) — attachment download of cv.pdf
+  Tasks (per brief):
+    0  Design shift — tokens in globals.css: charcoal surfaces, violet-tinted
+       borders, soft glows, ambient blobs, mono violet eyebrows, back-to-top.
+    1  Command palette — SSR-safe portal guard via useSyncExternalStore;
+       groups + violet accents restored; download uses a native anchor click
+       (was window.location.href — lint error/warning).
+    2  Logo — new glass-tile geometric V mark; used in IntroLoader, Navbar,
+       Footer, icon.svg, and opengraph-image.
+    3  Numbering — removed all "01 / ABOUT" style indices (SectionHeading API
+       migrated in Projects, Research, Skills, Certifications, case studies).
+    4  Side space — every section/page now uses the shared containerClass.
+    5  About — portrait left; bio + "Right Now" + 6-stat grid + education.
+    6  Contact + footer — form is Email / Subject / Message only; validators,
+       API route, and copy updated; footer rebuilt.
+    7  Download — /resume/download route + <a download> triggers (Hero, resume
+       toolbar, command palette); Lenis-safe.
+    8  Projects stat — profile.stats uses projects.length ("Projects Built").
+    9  Education — 3 accent-tinted cards, no blue dots.
+    10 Certifications — achievements trophy row + certification grid.
+    11 Personality — accent tiles, colored Lucide icons, deterministic
+       category-colored covers (violet/cyan/emerald), token consistency sweep.
+    EXTRA — hero code window (profile.codeCard), animated gradient border on
+       featured cards/CTA, hairline dividers, toast restyle, 2-row skills
+       marquee; reduced-motion respected throughout.
+  Files touched (high level): globals.css; data/{profile,contact,
+    certifications,projects?}.ts; lib/validators.ts; app/{layout,
+    not-found,opengraph-image}.tsx, app/{icon.svg,projects/[slug]/page.tsx,
+    resume/page.tsx, resume/download/route.ts, api/contact/route.ts};
+    components/{layout,sections,projects,contact,ui,effects,command-palette,
+    providers}/*.
+  Verification:
+    - `npm run lint` clean (fixed 1 error + 1 warning in CommandPalette).
+    - `npm run build` clean — 17 routes generated.
+    - `npm start` smoke test: /, /resume, /resume/download, /projects/[slug],
+      /robots.txt, /sitemap.xml, /icon.svg, /opengraph-image all 200;
+      unknown route 404.
+  Still TODO (unchanged): cert titles, research status/paperUrl, PUC rank
+    12 vs 13, LTM role title + joining date — all in src/data/*.
 
 [2026-11-03 — PHASE 6: pre-push checks, README rewrite, push to GitHub]
   What: Ran pre-push safety checks, rewrote README.md, added MIT LICENSE,

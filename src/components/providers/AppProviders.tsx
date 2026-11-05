@@ -10,6 +10,7 @@ import { SmoothScroll } from "@/components/effects/SmoothScroll";
 import { CommandPalette } from "@/components/command-palette/CommandPalette";
 import { CommandPaletteProvider } from "@/components/command-palette/CommandPaletteProvider";
 import { Navbar } from "@/components/layout/Navbar";
+import { BackToTop } from "@/components/ui/BackToTop";
 import { ToastProvider } from "@/components/ui/Toast";
 
 /** Client-side shell: scroll, nav, palette, toasts, atmosphere. */
@@ -37,6 +38,7 @@ export function AppProviders({
             </a>
             <Navbar />
             <CommandPalette cvAvailable={cvAvailable} />
+            <BackToTop />
             <div className="relative z-10 flex min-h-full flex-1 flex-col">
               <PageTransition>{children}</PageTransition>
             </div>

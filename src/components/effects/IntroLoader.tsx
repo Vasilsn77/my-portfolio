@@ -2,13 +2,13 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { profile } from "@/data/profile";
+import { LogoMark } from "@/components/ui/Logo";
 
 const SESSION_KEY = "vasil-portfolio-intro-seen";
 const INTRO_MS = 1100;
 
 /**
- * Brief intro: monogram "V" draws in, then the overlay fades.
+ * Brief intro: the logo mark scales in, then the overlay fades.
  * Skipped on repeat visits in the same session and for reduced motion.
  *
  * The overlay always renders on the server and first paint (so there is never
@@ -56,32 +56,13 @@ export function IntroLoader() {
           transition={{ duration: 0.35, ease: "easeOut" }}
           aria-hidden="true"
         >
-          <svg
-            width="72"
-            height="72"
-            viewBox="0 0 72 72"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <motion.div
+            initial={{ opacity: 0.4, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <defs>
-              <linearGradient id="loader-grad" x1="0" y1="0" x2="72" y2="72">
-                <stop stopColor="#22D3EE" />
-                <stop offset="1" stopColor="#8B5CF6" />
-              </linearGradient>
-            </defs>
-            <motion.path
-              d="M18 16 L36 56 L54 16"
-              stroke="url(#loader-grad)"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-              initial={{ pathLength: 0, opacity: 0.4 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            />
-            <title>{profile.monogram}</title>
-          </svg>
+            <LogoMark className="size-20" />
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
